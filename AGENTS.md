@@ -20,4 +20,6 @@ Claude runs on the user's subscription only, through the CLIProxyAPI pool on the
 
 - `npm test` writes fixture sessions into `data/`, the dev data root; point `LH_DATA_DIR` elsewhere for real use or clear `data/` after testing.
 - `tests/render-sidebar.test.tsx` "the meta line" also fails on upstream.
-- Sync with `git fetch upstream && git rebase upstream/main`.
+- Desktop app: `scripts/fork-desktop.sh` builds the AppImage and installs it to `~/.local/share/learnharness/`. The launcher `~/.local/share/applications/learnharness.desktop` passes `LH_ANTHROPIC_BASE_URL`; the pool key sits in `~/.config/LearnHarness/auth.json`, data in `~/.config/LearnHarness/data/`. Packaging needs ~2.5 GB free on `/home`. The updater reads this fork's releases (none), so updates mean rerunning the script.
+- From a T3 shell, launch the AppImage with `ELECTRON_RUN_AS_NODE` unset, or it runs as plain Node and exits.
+- Sync with `git fetch upstream && git rebase upstream/main`, then rerun `scripts/fork-desktop.sh`.
