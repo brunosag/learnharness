@@ -61,9 +61,34 @@ let collection: ReturnType<typeof createModels> | undefined;
 export function piModels() {
 	if (!collection) {
 		collection = createModels({ identity: APP_IDENTITY });
-		for (const provider of builtinProviders()) collection.setProvider(provider);
+		for (const provider of builtinProviders()) collection.setProvider(withAnthropicBaseUrl(provider));
 	}
 	return collection;
+}
+
+type Provider = ReturnType<typeof builtinProviders>[number];
+
+/** Fork: LH_ANTHROPIC_BASE_URL sends Anthropic API-key requests to a
+ *  compatible proxy (a Claude subscription pool), since direct subscription
+ *  tokens from third-party apps draw from extra usage, not plan limits. */
+function withAnthropicBaseUrl(provider: Provider): Provider {
+	const baseUrl = process.env.LH_ANTHROPIC_BASE_URL;
+	const apiKey = provider.auth.apiKey;
+	if (provider.id !== "anthropic" || !baseUrl || !apiKey) return provider;
+	return {
+		...provider,
+		baseUrl,
+		auth: {
+			...provider.auth,
+			apiKey: {
+				...apiKey,
+				resolve: async (input) => {
+					const resolved = await apiKey.resolve(input);
+					return resolved && { ...resolved, auth: { ...resolved.auth, baseUrl } };
+				},
+			},
+		},
+	};
 }
 
 /** OpenRouter API key (BYOK); tests never read this — they inject engines. */
