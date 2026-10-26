@@ -45,7 +45,9 @@ export function prettyModel(id: string, qualified = false): string {
 	const { provider, id: bare } = splitQualified(id);
 	const short = bare.includes("/") ? bare.slice(bare.lastIndexOf("/") + 1) : bare;
 	const parts = short.split("-");
-	const trimmed = /^\d+$/.test(parts[parts.length - 1] ?? "") ? parts.slice(0, -1) : parts;
+	// Only 3+ digit tails are dates/snapshot tags (-20250514, -0902, -001); a 1-2
+	// digit tail is part of the version (claude-opus-5-5 is Opus 5.5).
+	const trimmed = /^\d{3,}$/.test(parts[parts.length - 1] ?? "") ? parts.slice(0, -1) : parts;
 	// No auto-capitalization, dashes KEPT (owner rounds 4-5, 2026-10-05):
 	// model names render exactly as their providers write them.
 	const pretty = trimmed.join("-");
