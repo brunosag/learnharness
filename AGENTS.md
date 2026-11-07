@@ -16,6 +16,8 @@ Concretely: first investigate and plan rigorously (asking the user design questi
 
 # Fork (brunosag/learnharness)
 
+The user's fork, so they can learn with LearnHarness on their Claude subscription pool; it stays close to upstream.
+
 Upstream's text above and `docs/` are upstream's; keep fork notes to this section so upstream merges stay clean. Sync with `git fetch upstream && git rebase upstream/main`, then rerun `scripts/fork-desktop.sh`.
 
 Claude runs on the user's subscription only, through the CLIProxyAPI pool on the VPS (`https://vps.tailcf3a8a.ts.net:8318`). Anthropic bills a subscription token sent straight from a third-party app (pi-ai included) as extra usage, not plan limits, so never paste a `claude setup-token` token into the Anthropic key field. `.env.local` sets `LH_ANTHROPIC_BASE_URL` to the pool and `ANTHROPIC_API_KEY` to the pool's client key (`access.api-keys` in `~/.config/cliproxy/config.yaml` on the VPS). Run from source with `npm run dev`, without this machine's `ANTHROPIC_*` variables in the environment (real env overrides `.env.local`).
